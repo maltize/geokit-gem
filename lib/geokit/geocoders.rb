@@ -449,6 +449,7 @@ module Geokit
           when 'PopulatedPlace' : 'city'
           when 'Postcode1'      : 'zip'
           when 'Postcode2'      : 'zip'
+          when 'RoadBlock'      : 'street'
           when 'Address'        : 'address'
           else                    'unkown'
           end
