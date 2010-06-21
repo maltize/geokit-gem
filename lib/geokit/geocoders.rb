@@ -391,7 +391,7 @@ module Geokit
       # Template method which does the geocode lookup.
       def self.do_geocode(address, options = {})
         address_str = address.is_a?(GeoLoc) ? address.to_geocodeable_s : address
-        url="http://dev.virtualearth.net/REST/v1/Locations/#{Geokit::Inflector::url_escape(address_str)}?key=#{Geokit::Geocoders::bing}&o=xml"
+        url="http://dev.virtualearth.net/REST/v1/Locations/#{URI.escape(address_str)}?key=#{Geokit::Geocoders::bing}&o=xml"
         res = self.call_geocoder_service(url)
         return GeoLoc.new if !res.is_a?(Net::HTTPSuccess)
         xml = res.body
@@ -401,8 +401,7 @@ module Geokit
       
       def self.xml2GeoLoc(xml, address="")
         doc=REXML::Document.new(xml)
-
-        if doc.elements['//Response/StatusCode'].text == '200'
+        if doc.elements['//Response/StatusCode'] && doc.elements['//Response/StatusCode'].text == '200'
           geoloc = nil
           # Bing can return multiple results as //Location elements. 
           # iterate through each and extract each location as a geoloc
@@ -412,7 +411,7 @@ module Geokit
           end
           return geoloc
         else
-          logger.info "Bing was unable to geocode address: "+address
+          logger.debug "Bing was unable to geocode address: "+address
           return GeoLoc.new
         end
 
@@ -425,8 +424,8 @@ module Geokit
       def self.extract_location(doc)
         res                 = GeoLoc.new
         res.provider        = 'bing'
-        res.lat             = doc.elements['.//Latitude'].text
-        res.lng             = doc.elements['.//Longitude'].text
+        res.lat             = doc.elements['.//Latitude'].text         if doc.elements['.//Latitude']
+        res.lng             = doc.elements['.//Longitude'].text        if doc.elements['.//Longitude']
         res.city            = doc.elements['.//Locality'].text         if doc.elements['.//Locality']
         res.state           = doc.elements['.//AdminDistrict'].text    if doc.elements['.//AdminDistrict']
         res.province        = doc.elements['.//AdminDistrict2'].text   if doc.elements['.//AdminDistrict2']
