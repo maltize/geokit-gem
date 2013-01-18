@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{geokit}
-  s.version = "1.5.0"
+  s.version = "1.5.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andre Lewis and Bill Eisenhauer"]
-  s.date = %q{2009-08-02}
+  s.date = %q{2013-01-18}
   s.description = %q{Geokit Gem}
   s.email = ["andre@earthcode.com / bill_eisenhauer@yahoo.com"]
   s.extra_rdoc_files = ["Manifest.txt", "README.markdown"]
