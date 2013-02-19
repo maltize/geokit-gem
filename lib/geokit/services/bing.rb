@@ -13,7 +13,7 @@ module Geokit
         url="http://dev.virtualearth.net/REST/v1/Locations?q=#{URI.escape(address_str)}&key=#{Geokit::Geocoders::bing}&o=xml"
         res = self.call_geocoder_service(url)
         return GeoLoc.new if !res.is_a?(Net::HTTPSuccess)
-        xml = res.body
+        xml = self.transcode_to_utf8(res.body)
         logger.debug "Bing geocoding. Address: #{address}. Result: #{xml}"
         return self.xml2GeoLoc(xml, address)
       end
@@ -80,6 +80,16 @@ module Geokit
         end
         res.success         = true
         return res
+      end
+
+      def self.transcode_to_utf8(body)
+        require 'iconv' unless String.method_defined?(:encode)
+        if String.method_defined?(:encode)
+          body.encode!('UTF-8', 'UTF-8', :invalid => :replace)
+        else
+          ic = Iconv.new('UTF-8', 'UTF-8//IGNORE')
+          body = ic.iconv(body)
+        end
       end
 
     end
