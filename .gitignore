@@ -2,3 +2,7 @@
 .project
 pkg
 .idea
+nbproject
+*.swp
+Gemfile.lock
+*.idea

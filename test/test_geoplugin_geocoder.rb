@@ -1,8 +1,7 @@
-# encoding: utf-8
-require File.join(File.dirname(__FILE__), 'test_base_geocoder')
+require File.join(File.dirname(__FILE__), 'helper')
 
 class IpGeocoderTest < BaseGeocoderTest #:nodoc: all
-    
+
   IP_SUCCESS=<<-EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <geoPlugin>
@@ -24,8 +23,8 @@ class IpGeocoderTest < BaseGeocoderTest #:nodoc: all
   def setup
     super
     @success.provider = "geoPlugin"
-  end    
-  
+  end
+
   def test_successful_lookup
     success = MockSuccess.new
     success.expects(:body).returns(IP_SUCCESS)
@@ -33,8 +32,8 @@ class IpGeocoderTest < BaseGeocoderTest #:nodoc: all
     GeoKit::Geocoders::GeoPluginGeocoder.expects(:call_geocoder_service).with(url).returns(success)
     location = GeoKit::Geocoders::GeoPluginGeocoder.geocode('200.150.38.66')
     assert_not_nil location
-    assert_equal -19.916700, location.lat
-    assert_equal -43.933300, location.lng
+    assert_equal(-19.916700, location.lat)
+    assert_equal(-43.933300, location.lng)
     assert_equal "Belo Horizonte", location.city
     assert_equal "Minas Gerais", location.state
     assert_equal "BR", location.country_code
@@ -47,7 +46,7 @@ class IpGeocoderTest < BaseGeocoderTest #:nodoc: all
     assert_not_nil location
     assert !location.success?
   end
-  
+
   def test_service_unavailable
     failure = MockFailure.new
     url = 'http://www.geoplugin.net/xml.gp?ip=10.10.10.10'
@@ -55,5 +54,5 @@ class IpGeocoderTest < BaseGeocoderTest #:nodoc: all
     location = GeoKit::Geocoders::GeoPluginGeocoder.geocode("10.10.10.10")
     assert_not_nil location
     assert !location.success?
-  end  
+  end
 end
